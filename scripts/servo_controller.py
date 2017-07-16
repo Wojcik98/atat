@@ -4,20 +4,31 @@ import rospy
 from atat.msg import ServoPositions
 
 
-def get_cmd_impulse(channel, impulse, time):
-    cmd = '#' + str(channel) + 'P' + str(impulse) + 'T' + str(time) + '\r\n'
+def get_cmd_end():
+    return [ord('\r'), ord('\n')]
+
+
+def get_cmd_time(time):
+    cmd = 'T' + str(time)
     return [ord(c) for c in cmd]
 
 
-def get_cmd_angle(channel, angle, time):
-    impulse = int(float(angle)*2500./180. + 500)
-    return get_cmd_impulse(channel, impulse, time)
+def get_cmd_impulse(channel, impulse):
+    cmd = '#' + str(channel) + 'P' + str(impulse)
+    return [ord(c) for c in cmd]
 
 
-def set_servos(port, channels, angles, times):
+def get_cmd_angle(channel, angle):
+    impulse = int(float(angle)*2200./180. + 500)
+    return get_cmd_impulse(channel, impulse)
+
+
+def set_servos(port, channels, angles, time):
     cmd = []
     for i in range(len(channels)):
-        cmd += get_cmd_angle(channels[i], angles[i], times[i])
+        cmd += get_cmd_angle(channels[i], angles[i])
+    cmd += get_cmd_time(time)
+    cmd += get_cmd_end()
     return port.write(cmd)
 
 
@@ -32,7 +43,7 @@ def callback(servo_positions):
     rospy.loginfo('Setting servos: ' + str(angles))
     # TODO set this in parameter server
     channels = [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16]]
-    times = [[100]*4] * 4
+    times = [200] * 4
     set_legs(port, channels, angles, times)
 
 
