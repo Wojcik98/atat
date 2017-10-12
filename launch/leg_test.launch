@@ -1,0 +1,14 @@
+<launch>
+    <param name="servo_1_angle_zero" type="double" value="0.0"/>
+    <param name="servo_2_angle_zero" type="double" value="0.0"/>
+    <param name="servo_3_angle_zero" type="double" value="0.0"/>
+    <param name="servo_4_angle_zero" type="double" value="0.0"/>
+    <param name="servo_1_direction" type="int" value="-1"/>
+    <param name="servo_2_direction" type="int" value="-1"/>
+    <param name="servo_3_direction" type="int" value="-1"/>
+    <param name="servo_4_direction" type="int" value="-1"/>
+
+    <node pkg="joy" name="joy_node" type="joy_node"/>
+    <node pkg="atat" name="servo_controller" type="servo_controller.py"/>
+    <node pkg="atat" name="leg_test" type="leg_test.py"/>
+</launch>

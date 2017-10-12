@@ -24,9 +24,12 @@ def get_cmd_angle(angle, channel):
 
 
 def set_servos(angles, time):
-    cmd = [get_cmd_angle(angle, channel) for channel, angle in angles]
+    cmd = []
+    for channel, angle in angles:
+        cmd += get_cmd_angle(angle, channel)
     cmd += get_cmd_time(time)
     cmd += get_cmd_end()
+    rospy.logdebug(''.join([chr(a) for a in cmd]))
     return port.write(cmd)
 
 
@@ -35,7 +38,7 @@ def given2real(given_angles):
     for servo in given_angles.servos:
         ch = servo.channel
         angle = servo.angle
-        angle_zero = rospy.get_param('servo_' + str(ch) + '_angle_zero')    # TODO add to parameter server
+        angle_zero = rospy.get_param('servo_' + str(ch) + '_angle_zero')
         servo_direction = int(rospy.get_param('servo_' + str(ch) + '_direction'))   # 1 or -1
 
         real_angle = angle_zero + angle
@@ -49,6 +52,7 @@ def given2real(given_angles):
 def callback(given_angles):
     time = 200     # TODO read from parameter server
     real_angles = given2real(given_angles)
+    rospy.loginfo(real_angles)
     set_servos(real_angles, time)
 
 
