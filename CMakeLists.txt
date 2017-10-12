@@ -51,7 +51,7 @@ find_package(catkin REQUIRED COMPONENTS
 add_message_files(
   FILES
   ServoAngle.msg
-  ServoAngles.msg
+  ServosAngles.msg
 )
 
 ## Generate services in the 'srv' folder
